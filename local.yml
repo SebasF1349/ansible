@@ -8,6 +8,31 @@
         update_cache: true
         upgrade: true
 
+    - name: Install Packages with Pacman
+      community.general.pacman:
+        name: 
+          - base-devel
+          - starship
+          - exa
+          - bat
+          - git-delta
+          - fd
+          - fzf
+          - ripgrep
+          - wl-clipboard
+          - ttf-jetbrains-mono
+          - keepassxc
+          - docker
+          - docker-compose
+          - obs-studio
+          - curl
+          - openssh
+          - libreoffice
+          - firefox
+          - nodejs
+          - rust
+        state: latest
+
     - name: Clone Dot Files
       git:
         repo: git@github.com:SebasF1349/dot_files.git
