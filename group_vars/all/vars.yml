@@ -1,0 +1,22 @@
+packages:
+  - base-devel
+  - starship
+  - exa
+  - bat
+  - git-delta
+  - fd
+  - fzf
+  - ripgrep
+  - wl-clipboard
+  - ttf-jetbrains-mono
+  - keepassxc
+  - docker
+  - docker-compose
+  - obs-studio
+  - curl
+  - openssh
+  - libreoffice
+  - firefox
+  - nodejs
+  - rust
+  - waybar
