@@ -2,5 +2,5 @@
   connection: local
   become: true
 
-  tasks:
-    - import_tasks: tasks/essentials.yml
+  roles:
+    - role: system

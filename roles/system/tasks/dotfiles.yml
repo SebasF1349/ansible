@@ -1,0 +1,8 @@
+- name: Clone or Update Dot Files
+  git:
+    repo: git@github.com:SebasF1349/dot_files.git
+    dest: /home/sebas/dot_files
+    clone: yes
+    update: yes
+    accept_hostkey: yes
+    key_file: /home/sebas/.ssh/id_ed25519
