@@ -1,11 +1,16 @@
+username: sebas
 packages:
   - base-devel
+  - man
   - starship
+  - less
+  - tealdeer
   - exa
   - bat
   - git-delta
   - fd
   - fzf
+  - jq
   - ripgrep
   - wl-clipboard
   - ttf-jetbrains-mono
@@ -18,5 +23,15 @@ packages:
   - libreoffice
   - firefox
   - nodejs
-  - rust
+  - rustup
   - waybar
+  - pavucontrol
+  - pipewire
+  - wireplumber
+  - openssh
+  - reflector
+  - brightnessctl
+  - xdg-desktop-portal-hyprland
+  - polkit-kde-agent
+  - qt5-wayland
+  - qt6-wayland
