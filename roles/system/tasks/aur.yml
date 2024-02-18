@@ -1,0 +1,11 @@
+- name: Aur
+  become: yes
+  become_user: aur_builder
+  kewlfft.aur.aur:
+    use: yay
+    state: present
+    name: 
+      - wezterm-git
+      - implay
+      - neovim-nightly-bin
+      - swaync
