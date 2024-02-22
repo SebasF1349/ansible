@@ -1,9 +1,17 @@
+- name: Install Rustup
+  community.general.pacman:
+    name: rustup
+    state: latest
+  register: pacman
+
 - name: Install Rust
   become: yes
   become_user: aur_builder
   ansible.builtin.shell:
     cmd: rustup default stable
+  when: pacman.changed
 
 - name: Install Rust
   ansible.builtin.shell:
     cmd: rustup default stable
+  when: pacman.changed

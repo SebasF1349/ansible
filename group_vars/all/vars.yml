@@ -23,7 +23,6 @@ packages:
   - libreoffice
   - firefox
   - nodejs
-  - rustup
   - waybar
   - pavucontrol
   - pipewire
