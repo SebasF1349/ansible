@@ -4,3 +4,4 @@
 - include_tasks: yay.yml
 - include_tasks: rust.yml
 - include_tasks: aur.yml
+- include_tasks: reflector.yml

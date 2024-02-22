@@ -29,7 +29,6 @@ packages:
   - pipewire
   - wireplumber
   - openssh
-  - reflector
   - brightnessctl
   - xdg-desktop-portal-hyprland
   - polkit-kde-agent
