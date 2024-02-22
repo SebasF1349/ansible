@@ -35,3 +35,6 @@ packages:
   - polkit-kde-agent
   - qt5-wayland
   - qt6-wayland
+  - grim
+  - slurp
+  - thunderbird
