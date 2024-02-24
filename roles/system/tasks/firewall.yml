@@ -1,0 +1,14 @@
+- name: Install firewall
+  community.general.pacman:
+    name: firewalld
+    state: latest
+
+- name: Enable firewall
+  ansible.builtin.systemd_service:
+    name: firewalld.service
+    enabled: true
+
+- name: Start firewall
+  ansible.builtin.systemd_service:
+    name: firewalld.service
+    state: started
