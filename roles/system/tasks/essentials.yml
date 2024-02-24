@@ -1,3 +1,9 @@
+- name: Avoid installing debug version
+  ansible.builtin.lineinfile:
+    path: /etc/makepkg.conf
+    regexp: "^OPTIONS="
+    line: "OPTIONS=(strip docs !libtool !staticlibs emptydirs zipman purge !debug lto)"
+
 - name: Update Pacman
   community.general.pacman:
     update_cache: true
