@@ -9,3 +9,9 @@
       - implay
       - neovim-nightly-bin
       - swaync
+      - rofi-lbonn-wayland-git
+
+- name: Install Rofi Calculator
+  community.general.pacman:
+    name: rofi-calc
+    state: latest
