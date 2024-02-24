@@ -1,5 +1,6 @@
 username: sebas
 packages:
+  # Base
   - base-devel
   - man
   - starship
@@ -13,21 +14,13 @@ packages:
   - jq
   - ripgrep
   - wl-clipboard
-  - ttf-jetbrains-mono
-  - keepassxc
-  - docker
-  - docker-compose
-  - obs-studio
   - curl
   - openssh
-  - libreoffice
-  - firefox
   - nodejs
   - waybar
   - pavucontrol
   - pipewire
   - wireplumber
-  - openssh
   - brightnessctl
   - xdg-desktop-portal-hyprland
   - polkit-kde-agent
@@ -35,4 +28,13 @@ packages:
   - qt6-wayland
   - grim
   - slurp
+  # font
+  - ttf-jetbrains-mono
+  # apps
+  - keepassxc
+  - docker
+  - docker-compose
+  - obs-studio
+  - libreoffice
+  - firefox
   - thunderbird
