@@ -10,3 +10,19 @@
     state: present
     flatpakrepo_url: http://dl.flathub.org/repo/flathub.flatpakrepo
   when: flatpak.changed
+    
+- name: Install Flatpaks
+  community.general.flatpak:
+    name:
+      - us.zoom.Zoom
+      - com.obsproject.Studio
+    state: present
+  register: installation
+
+- name: Config Zoom to share screen
+  ansible.builtin.lineinfile:
+    path: /home/sebas/.var/app/us.zoom.Zoom/config/zoomus.conf
+    regexp: "^enableWaylandShare="
+    line: "enableWaylandShare=true"
+  when: installation.changed
+

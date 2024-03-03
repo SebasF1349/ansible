@@ -22,6 +22,7 @@ packages:
   - pipewire
   - wireplumber
   - brightnessctl
+  - xdg-desktop-portal
   - xdg-desktop-portal-hyprland
   - polkit-kde-agent
   - qt5-wayland
@@ -34,7 +35,6 @@ packages:
   - keepassxc
   - docker
   - docker-compose
-  - obs-studio
   - libreoffice
   - firefox
   - thunderbird

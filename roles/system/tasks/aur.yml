@@ -14,9 +14,11 @@
     state: present
     name: 
       - wezterm-git
+      - xwaylandvideobridge-git
       - implay
       - neovim-nightly-bin
       - swaync
+      - hyprland-autoname-workspaces-git
       - rofi-lbonn-wayland-git
 
 - name: Install Rofi Calculator
