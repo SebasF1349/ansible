@@ -16,7 +16,7 @@
       - wezterm-git
       - xwaylandvideobridge-git
       - implay
-      - neovim-nightly-bin
+      - neovim-git
       - swaync
       - hyprland-autoname-workspaces-git
       - rofi-lbonn-wayland-git
