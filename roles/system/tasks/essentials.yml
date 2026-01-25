@@ -19,4 +19,3 @@
     accept_hostkey: yes
     key_file: /home/sebas/.ssh/id_ed25519
   when: testing is defined and testing == '1'
-

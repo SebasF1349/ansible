@@ -14,19 +14,17 @@ packages:
   - jq
   - openssh
   - starship
-  # sway
-  - sway
-  - swaync
-  - swaybg
-  - swaylock
-  - swayidle
-  - swayimg
-  # utilities
-  - waybar
-  - wl-clipboard
-  - pavucontrol
+  # audio
   - pipewire
+  - pipewire-pulse
+  - pipewire-alsa
+  - pipewire-jack
   - wireplumber
+  - sof-firmware
+  - alsa-ucm-conf
+  - pavucontrol
+  # utilities
+  - wl-clipboard
   - brightnessctl
   - grim
   - slurp
@@ -37,7 +35,15 @@ packages:
   - qt6-wayland
   # font
   - ttf-jetbrains-mono
+  # sway
+  - sway
+  - swaync
+  - swaybg
+  - swaylock
+  - swayidle
+  - swayimg
   # apps
+  - waybar
   - rofi
   - keepassxc
   - docker

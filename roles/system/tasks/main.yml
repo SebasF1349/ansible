@@ -4,6 +4,7 @@
 - include_tasks: rust.yml
 - include_tasks: aur.yml
 - include_tasks: reflector.yml
+- include_tasks: audio.yml
 - include_tasks: flathub.yml
 - include_tasks: firewall.yml
 - include_tasks: dotfiles.yml
