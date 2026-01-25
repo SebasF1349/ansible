@@ -1,0 +1,36 @@
+- name: Ensure Kanata Config Dir
+  become: yes
+  ansible.builtin.file:
+    path: /etc/kanata
+    state: directory
+    force: true
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy Kanata Config File
+  become: yes
+  ansible.builtin.copy:
+    src: ~/dot_files/kanata/kanata.kbd
+    dest: /etc/kanata/kanata.kbd
+    force: true
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy Kanata Service File
+  become: yes
+  ansible.builtin.copy:
+    src: ~/dot_files/kanata/kanata.service
+    dest: /etc/systemd/system/kanata.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload systemd
+
+- name: Enable and Start Kanata Service
+  become: yes
+  ansible.builtin.systemd:
+    name: kanata
+    enabled: yes
+    state: started

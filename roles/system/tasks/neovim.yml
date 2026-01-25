@@ -1,0 +1,8 @@
+- name: Install Neovim
+  become: true
+  ansible.builtin.shell:
+    cmd: ./install-neovim.sh -f 2>&1 | tee install-neovim.log
+    chdir: /home/sebas/dot_files/install_scripts/
+    executable: /bin/bash
+  environment:
+    GIT_SSH_COMMAND: "ssh -i ~/.ssh/id_ed25519"

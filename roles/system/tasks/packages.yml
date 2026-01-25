@@ -1,11 +1,5 @@
 - name: Install Packages with Pacman
+  become: true
   community.general.pacman:
     name: "{{ packages }}"
     state: latest
-
-- name: Remove Pacman Packages
-  community.general.pacman:
-    name:
-      - wofi
-      - rofi
-    state: absent

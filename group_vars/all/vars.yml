@@ -2,39 +2,49 @@ username: sebas
 packages:
   # Base
   - base-devel
+  - nodejs
+  - python
   - man
-  - starship
   - less
-  - tealdeer
-  - exa
-  - bat
-  - git-delta
+  - unzip
   - fd
   - fzf
-  - jq
   - ripgrep
-  - wl-clipboard
   - curl
+  - jq
   - openssh
-  - nodejs
+  - starship
+  # sway
+  - sway
+  - swaync
+  - swaybg
+  - swaylock
+  - swayidle
+  - swayimg
+  # utilities
   - waybar
+  - wl-clipboard
   - pavucontrol
   - pipewire
   - wireplumber
   - brightnessctl
-  - xdg-desktop-portal
-  - xdg-desktop-portal-hyprland
-  - polkit-kde-agent
-  - qt5-wayland
-  - qt6-wayland
   - grim
   - slurp
+  - satty
+  - xdg-desktop-portal
+  - xdg-desktop-portal-wlr
+  - qt5-wayland
+  - qt6-wayland
   # font
   - ttf-jetbrains-mono
   # apps
+  - rofi
   - keepassxc
   - docker
   - docker-compose
   - libreoffice
   - firefox
   - thunderbird
+  - gimp
+  - mpv
+  - thunar

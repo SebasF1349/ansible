@@ -13,13 +13,11 @@
     use: yay
     state: present
     name: 
-      - wezterm-git
-      - xwaylandvideobridge-git
+      - kanata
       - implay
-      - neovim-git
-      - swaync
-      - hyprland-autoname-workspaces-git
-      - rofi-lbonn-wayland-git
+      - kdenlive
+      - xwaylandvideobridge
+      - wezterm-git
 
 - name: Install Rofi Calculator
   community.general.pacman:

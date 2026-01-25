@@ -18,11 +18,3 @@
       - com.obsproject.Studio
     state: present
   register: installation
-
-- name: Config Zoom to share screen
-  ansible.builtin.lineinfile:
-    path: /home/sebas/.var/app/us.zoom.Zoom/config/zoomus.conf
-    regexp: "^enableWaylandShare="
-    line: "enableWaylandShare=true"
-  when: installation.changed
-

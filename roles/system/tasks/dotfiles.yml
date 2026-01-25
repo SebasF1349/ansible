@@ -1,8 +1,41 @@
 - name: Clone or Update Dot Files
-  git:
-    repo: git@github.com:SebasF1349/dot_files.git
-    dest: /home/sebas/dot_files
-    clone: yes
-    update: yes
-    accept_hostkey: yes
-    key_file: /home/sebas/.ssh/id_ed25519
+  block:
+    - name: Stash local changes
+      ansible.builtin.command:
+        cmd: git stash
+        chdir: /home/sebas/dot_files
+
+    - name: Pull latest code
+      ansible.builtin.git:
+        repo: git@github.com:SebasF1349/dot_files.git
+        dest: /home/sebas/dot_files
+        clone: yes
+        update: yes
+        accept_hostkey: yes
+      environment:
+        GIT_SSH_COMMAND: "ssh -i ~/.ssh/id_ed25519"
+
+    - name: Re-apply local changes
+      ansible.builtin.command:
+        cmd: git stash pop
+        chdir: /home/sebas/dot_files
+      failed_when: false
+
+- name: Make link-dotfiles Executable
+  ansible.builtin.file:
+    path: /home/sebas/dot_files/install_scripts/link-dotfiles.sh
+    mode: '0755'
+
+- name: Link dotfiles
+  become: yes
+  ansible.builtin.shell:
+    cmd: ./link-dotfiles.sh -f 2>&1 | tee linked-files.log
+    chdir: /home/sebas/dot_files/install_scripts/
+    executable: /bin/bash
+  args:
+    creates: /home/sebas/dot_files/install_scripts/linked-files.log
+  register: script_output
+
+- name: Display Linking Files Output
+  ansible.builtin.debug:
+    var: script_output.stdout_lines
