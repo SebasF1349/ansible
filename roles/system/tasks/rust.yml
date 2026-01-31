@@ -9,9 +9,7 @@
   become_user: aur_builder
   ansible.builtin.shell:
     cmd: rustup default stable
-  when: pacman.changed
 
 - name: Install Rust
   ansible.builtin.shell:
     cmd: rustup default stable
-  when: pacman.changed
