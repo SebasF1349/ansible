@@ -33,6 +33,7 @@ packages:
   - xdg-desktop-portal-wlr
   - qt5-wayland
   - qt6-wayland
+  - pacman-contrib
   # font
   - ttf-jetbrains-mono
   # sway

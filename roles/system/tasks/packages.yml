@@ -3,3 +3,10 @@
   community.general.pacman:
     name: "{{ packages }}"
     state: latest
+
+- name: Enable Paccache
+  become: yes
+  ansible.builtin.systemd:
+    name: paccache.timer
+    enabled: yes
+    state: started
