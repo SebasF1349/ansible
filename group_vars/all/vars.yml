@@ -2,18 +2,27 @@ username: sebas
 packages:
   # Base
   - base-devel
+  - git
+  - clang
   - nodejs
   - python
   - man
   - less
+  - zip
   - unzip
-  - fd
-  - fzf
-  - ripgrep
+  - tar
+  - unrar
   - curl
+  - wget
+  - rsync
+  - htop
+  - fd
+  - ripgrep
+  - fzf
   - jq
   - openssh
   - starship
+  - bash-completion
   # audio
   - pipewire
   - pipewire-pulse
@@ -24,11 +33,14 @@ packages:
   - alsa-ucm-conf
   - pavucontrol
   # utilities
-  - wl-clipboard
   - brightnessctl
+  - playerctl
   - grim
   - slurp
   - satty
+  - wl-clipboard
+  - cliphist
+  - wl-clip-persist
   - xdg-desktop-portal
   - xdg-desktop-portal-wlr
   - qt5-wayland
@@ -43,6 +55,7 @@ packages:
   - swaylock
   - swayidle
   - swayimg
+  - autotiling
   # apps
   - waybar
   - rofi
