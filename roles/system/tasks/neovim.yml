@@ -6,3 +6,10 @@
     executable: /bin/bash
   environment:
     GIT_SSH_COMMAND: "ssh -i ~/.ssh/id_ed25519"
+
+- name: Install Tree-sitter-cli
+  community.general.cargo:
+    name: tree-sitter-cli
+    locked: true
+    state: present
+
