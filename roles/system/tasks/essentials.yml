@@ -1,8 +1,32 @@
+- name: Set System Timezone
+  become: true
+  community.general.timezone:
+    name: America/Argentina/Buenos_Aires
+
 - name: Avoid installing debug version
   ansible.builtin.lineinfile:
     path: /etc/makepkg.conf
     regexp: "^OPTIONS="
     line: "OPTIONS=(strip docs !libtool !staticlibs emptydirs zipman purge !debug lto)"
+
+- name: Enable color and parallel downloads in pacman.conf
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/pacman.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  loop:
+    - { regexp: '^#Color', line: 'Color' }
+    - { regexp: '^#ParallelDownloads', line: 'ParallelDownloads = 5' }
+
+- name: Enable eyecandy
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/pacman.conf
+    line: "ILoveCandy"
+    insertafter: "^\\s*Color$"
+    state: present
 
 - name: Update Pacman
   become: true
