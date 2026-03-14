@@ -3,6 +3,13 @@
   community.general.timezone:
     name: America/Argentina/Buenos_Aires
 
+- name: Enable time sync
+  become: true
+  ansible.builtin.service:
+    name: systemd-timesyncd
+    state: started
+    enabled: true
+
 - name: Avoid installing debug version
   ansible.builtin.lineinfile:
     path: /etc/makepkg.conf

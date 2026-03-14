@@ -3,6 +3,7 @@
   community.general.pacman:
     name: "{{ packages }}"
     state: latest
+    update_cache: yes
 
 - name: Enable Paccache
   become: yes

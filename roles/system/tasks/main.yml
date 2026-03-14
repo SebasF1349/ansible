@@ -7,6 +7,7 @@
 - include_tasks: audio.yml
 - include_tasks: flathub.yml
 - include_tasks: firewall.yml
+- include_tasks: timeshift.yml
 - include_tasks: dotfiles.yml
 - include_tasks: neovim.yml
 - include_tasks: kanata.yml

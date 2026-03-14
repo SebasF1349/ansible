@@ -1,0 +1,130 @@
+- name: Enable Cronie
+  become: true
+  ansible.builtin.service:
+    name: cronie
+    enabled: yes
+    state: started
+
+- name: Get UUIDs from labels
+  become: true
+  ansible.builtin.shell: "blkid -t LABEL={{ item }} -s UUID -o value"
+  register: uuid_results
+  loop:
+    - "{{ luks_partition_label }}"
+    - "{{ root_fs_label }}"
+  changed_when: false
+
+- name: Set UUID facts
+  ansible.builtin.set_fact:
+    luks_uuid: "{{ uuid_results.results[0].stdout }}"
+    root_uuid: "{{ uuid_results.results[1].stdout }}"
+
+- name: Install Timeshift & Grub
+  become: true
+  community.general.pacman:
+    name:
+      - grub
+      - efibootmgr
+      - grub-btrfs
+      - timeshift
+    state: latest
+
+- name: Install timeshift-autosnap
+  become: yes
+  become_user: aur_builder
+  kewlfft.aur.aur:
+    use: yay
+    state: present
+    name: 
+      - timeshift-autosnap
+
+- name: Configure mkinitcpio hooks
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/mkinitcpio.conf
+    regexp: '^HOOKS='
+    line: 'HOOKS=(base systemd autodetect modconf kms keyboard sd-vconsole block sd-encrypt filesystems btrfs fsck)'
+
+- name: Regenerate initramfs
+  become: true
+  ansible.builtin.command: mkinitcpio -P
+
+- name: Configure GRUB for encrypted Btrfs
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  loop:
+    - regexp: '^GRUB_CMDLINE_LINUX='
+      line: 'GRUB_CMDLINE_LINUX="rootflags=subvol=@"'
+    - regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+      line: 'GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet rd.luks.name={{ luks_uuid }}=cryptroot root=UUID={{ root_uuid }} rootflags=subvol=@"'
+    - regexp: '^#?GRUB_ENABLE_CRYPTODISK='
+      line: 'GRUB_ENABLE_CRYPTODISK=n'
+    - regexp: '^GRUB_PRELOAD_MODULES='
+      line: 'GRUB_PRELOAD_MODULES="part_gpt btrfs"'
+
+- name: Install GRUB to EFI partition
+  become: yes
+  ansible.builtin.command: grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+
+- name: Generate GRUB configuration
+  become: true
+  ansible.builtin.command: grub-mkconfig -o /boot/grub/grub.cfg
+
+- name: Ensure grub-btrfsd service is enabled
+  ansible.builtin.systemd:
+    name: grub-btrfsd
+    enabled: yes
+    state: started
+
+- name: Create Timeshift config diretory
+  ansible.builtin.file:
+    path: /etc/timeshift
+    state: directory
+    mode: '0755'
+
+- name: Setup Timeshift Schedule
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/timeshift/timeshift.json
+    content: |
+      {
+        "backup_device_uuid": "{{ root_uuid }}",
+        "parent_device_uuid": "",
+        "do_first_run" : "false",
+        "btrfs_mode" : "true",
+        "include_btrfs_home_for_backup" : "false",
+        "include_btrfs_home_for_restore" : "false",
+        "stop_cron_emails" : "true",
+        "schedule_monthly" : "false",
+        "schedule_weekly" : "true",
+        "schedule_daily" : "true",
+        "schedule_hourly" : "false",
+        "schedule_boot" : "true",
+        "count_monthly" : "2",
+        "count_weekly" : "3",
+        "count_daily" : "5",
+        "count_hourly" : "6",
+        "count_boot" : "3",
+        "snapshot_size" : "0",
+        "snapshot_count" : "0",
+        "date_format" : "%Y-%m-%d %H:%M:%S",
+        "exclude" : [],
+        "exclude-apps" : [],
+        "snapshot_device": "UUID={{ root_uuid }}"
+      }
+
+- name: List Timeshift snapshots
+  become: yes
+  ansible.builtin.command: timeshift --list --scripted
+  register: snapshot_list
+  changed_when: false
+  failed_when: false
+
+- name: Display snapshot information
+  ansible.builtin.debug:
+    msg: "{{ snapshot_list.stdout_lines }}"
+  when: snapshot_list.stdout_lines is defined

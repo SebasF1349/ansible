@@ -1,4 +1,6 @@
 username: sebas
+luks_partition_label: "LUKS_ROOT"
+root_fs_label: "ARCH_ROOT"
 packages:
   # Base
   - base-devel
@@ -16,6 +18,8 @@ packages:
   - wget
   - rsync
   - htop
+  - cronie
+  - inotify-tools
   - fd
   - ripgrep
   - fzf
