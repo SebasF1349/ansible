@@ -12,7 +12,9 @@ eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519
 
 ## Complete VARS
 
-Get partition labels with
+- edit use_wayland as desired
+
+- Get partition labels with
 
 ```sh
 lsblk -f

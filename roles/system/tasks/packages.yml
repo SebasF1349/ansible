@@ -1,9 +1,25 @@
 - name: Install Packages with Pacman
   become: true
   community.general.pacman:
-    name: "{{ packages }}"
+    name: "{{ common_packages }}"
     state: latest
     update_cache: yes
+
+- name: Install x11 Packages with Pacman
+  become: true
+  community.general.pacman:
+    name: "{{ x11_packages }}"
+    state: latest
+    update_cache: yes
+  when: not use_wayland | bool
+
+- name: Install Wayland Packages with Pacman
+  become: true
+  community.general.pacman:
+    name: "{{ wayland_packages }}"
+    state: latest
+    update_cache: yes
+  when: use_wayland | bool
 
 - name: Enable Paccache
   become: yes

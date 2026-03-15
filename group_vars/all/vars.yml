@@ -1,8 +1,8 @@
 username: sebas
+use_wayland: false
 luks_partition_label: "LUKS_ROOT"
 root_fs_label: "ARCH_ROOT"
-packages:
-  # Base
+common_packages:
   - base-devel
   - git
   - clang
@@ -37,31 +37,12 @@ packages:
   - alsa-ucm-conf
   - pavucontrol
   # utilities
+  - networkmanager
   - brightnessctl
   - playerctl
-  - grim
-  - slurp
-  - satty
-  - wl-clipboard
-  - cliphist
-  - wl-clip-persist
-  - xdg-desktop-portal
-  - xdg-desktop-portal-wlr
-  - qt5-wayland
-  - qt6-wayland
   - pacman-contrib
-  # font
   - ttf-jetbrains-mono
-  # sway
-  - sway
-  - swaync
-  - swaybg
-  - swaylock
-  - swayidle
-  - swayimg
-  - autotiling
   # apps
-  - waybar
   - rofi
   - keepassxc
   - docker
@@ -72,3 +53,39 @@ packages:
   - gimp
   - mpv
   - thunar
+wayland_packages:
+  - sway
+  - swaync
+  - swaybg
+  - swaylock
+  - swayidle
+  - swayimg
+  - autotiling
+  - waybar
+  - grim
+  - slurp
+  - satty
+  - wl-clipboard
+  - cliphist
+  - wl-clip-persist
+  - xdg-desktop-portal
+  - xdg-desktop-portal-wlr
+  - qt5-wayland
+  - qt6-wayland
+x11_packages:
+  - i3-wm
+  - i3lock
+  - i3blocks
+  - xorg-server
+  - xorg-xinit
+  - xorg-xsetroot
+  - xorg-xrandr
+  - polybar
+  - dunst
+  - feh
+  - xss-lock
+  - maim
+  - slop
+  - xclip
+  - picom
+  - dex
