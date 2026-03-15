@@ -2,11 +2,12 @@
 
 ## Prequesites
 
-Start ssh-agent for git
+- Update dependencies (at least the linux kernel or some cmds will fail)
+
+- Start ssh-agent for git
 
 ```sh
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519
+eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519
 ```
 
 ## Complete VARS
