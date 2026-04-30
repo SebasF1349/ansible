@@ -93,3 +93,5 @@ x11_packages:
   - xclip
   - picom
   - dex
+  - caffeine-ng
+  - xorg-xset
