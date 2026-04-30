@@ -45,6 +45,7 @@ common_packages:
   - playerctl
   - pacman-contrib
   - ttf-jetbrains-mono
+  - noto-fonts # adds unicode glyphs
   # apps
   - rofi
   - keepassxc
