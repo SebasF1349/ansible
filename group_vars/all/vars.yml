@@ -27,7 +27,7 @@ common_packages:
   - openssh
   - starship
   - bash-completion
-  # audio
+  # audio & bluetooth
   - pipewire
   - pipewire-pulse
   - pipewire-alsa
@@ -36,6 +36,9 @@ common_packages:
   - sof-firmware
   - alsa-ucm-conf
   - pavucontrol
+  - bluez
+  - bluez-utils
+  - blueman
   # utilities
   - networkmanager
   - brightnessctl
