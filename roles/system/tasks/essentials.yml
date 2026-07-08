@@ -3,6 +3,12 @@
   community.general.timezone:
     name: America/Argentina/Buenos_Aires
 
+- name: Validate target distribution
+  ansible.builtin.assert:
+    that:
+      - target_distribution in ['arch', 'debian']
+    fail_msg: "target_distribution must be either 'arch' or 'debian'."
+
 - name: Enable time sync
   become: true
   ansible.builtin.service:
@@ -15,6 +21,7 @@
     path: /etc/makepkg.conf
     regexp: "^OPTIONS="
     line: "OPTIONS=(strip docs !libtool !staticlibs emptydirs zipman purge !debug lto)"
+  when: target_distribution == 'arch'
 
 - name: Enable color and parallel downloads in pacman.conf
   become: true
@@ -26,6 +33,7 @@
   loop:
     - { regexp: '^#Color', line: 'Color' }
     - { regexp: '^#ParallelDownloads', line: 'ParallelDownloads = 5' }
+  when: target_distribution == 'arch'
 
 - name: Enable eyecandy
   become: true
@@ -34,12 +42,14 @@
     line: "ILoveCandy"
     insertafter: "^\\s*Color$"
     state: present
+  when: target_distribution == 'arch'
 
 - name: Update Pacman
   become: true
   community.general.pacman:
     update_cache: true
     upgrade: true
+  when: target_distribution == 'arch'
 
 - name: Update Ansible Repo
   ansible.builtin.git:

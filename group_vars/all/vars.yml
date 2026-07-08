@@ -1,8 +1,9 @@
 username: sebas
+target_distribution: arch
 use_wayland: false
 luks_partition_label: "LUKS_ROOT"
 root_fs_label: "ARCH_ROOT"
-common_packages:
+arch_common_packages:
   - base-devel
   - git
   - clang
@@ -57,7 +58,7 @@ common_packages:
   - gimp
   - mpv
   - thunar
-wayland_packages:
+arch_wayland_packages:
   - sway
   - swaync
   - swaybg
@@ -76,7 +77,7 @@ wayland_packages:
   - xdg-desktop-portal-wlr
   - qt5-wayland
   - qt6-wayland
-x11_packages:
+arch_x11_packages:
   - i3-wm
   - i3lock
   - i3blocks
@@ -95,3 +96,79 @@ x11_packages:
   - dex
   - caffeine-ng
   - xorg-xset
+
+debian_common_packages:
+  - build-essential
+  - git
+  - clang
+  - nodejs
+  - python3
+  - man-db
+  - less
+  - zip
+  - unzip
+  - tar
+  - unrar-free
+  - curl
+  - wget
+  - rsync
+  - htop
+  - cron
+  - inotify-tools
+  - fd-find
+  - ripgrep
+  - fzf
+  - jq
+  - openssh-client
+  - bash-completion
+  - pipewire
+  - pipewire-audio
+  - wireplumber
+  - pavucontrol
+  - bluez
+  - blueman
+  - network-manager
+  - brightnessctl
+  - playerctl
+  - fonts-jetbrains-mono
+  - fonts-noto-core
+  - rofi
+  - keepassxc
+  - docker.io
+  - docker-compose
+  - libreoffice
+  - firefox-esr
+  - thunderbird
+  - gimp
+  - mpv
+  - thunar
+
+debian_wayland_packages:
+  - sway
+  - swaybg
+  - swaylock
+  - swayidle
+  - waybar
+  - grim
+  - slurp
+  - wl-clipboard
+  - xdg-desktop-portal
+  - xdg-desktop-portal-wlr
+  - qt5-wayland
+  - qt6-wayland
+
+debian_x11_packages:
+  - i3
+  - i3lock
+  - i3blocks
+  - xorg
+  - xinit
+  - x11-xserver-utils
+  - polybar
+  - dunst
+  - feh
+  - xss-lock
+  - maim
+  - slop
+  - xclip
+  - picom
