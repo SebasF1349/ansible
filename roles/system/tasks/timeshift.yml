@@ -5,19 +5,31 @@
     enabled: yes
     state: started
 
-- name: Get UUIDs from labels
+- name: Get root UUID from label
   become: true
   ansible.builtin.shell: "blkid -t LABEL={{ item }} -s UUID -o value"
-  register: uuid_results
+  register: root_uuid_result
   loop:
-    - "{{ luks_partition_label }}"
     - "{{ root_fs_label }}"
   changed_when: false
 
-- name: Set UUID facts
+- name: Set root UUID fact
   ansible.builtin.set_fact:
-    luks_uuid: "{{ uuid_results.results[0].stdout }}"
-    root_uuid: "{{ uuid_results.results[1].stdout }}"
+    root_uuid: "{{ root_uuid_result.results[0].stdout }}"
+
+- name: Get LUKS UUID from label
+  become: true
+  ansible.builtin.shell: "blkid -t LABEL={{ item }} -s UUID -o value"
+  register: luks_uuid_result
+  loop:
+    - "{{ luks_partition_label }}"
+  changed_when: false
+  when: use_disk_encryption
+
+- name: Set LUKS UUID fact
+  ansible.builtin.set_fact:
+    luks_uuid: "{{ luks_uuid_result.results[0].stdout }}"
+  when: use_disk_encryption
 
 - name: Install Timeshift & Grub
   become: true
@@ -56,7 +68,19 @@
     path: /etc/mkinitcpio.conf
     regexp: '^HOOKS='
     line: 'HOOKS=(base systemd autodetect modconf kms keyboard sd-vconsole block sd-encrypt filesystems btrfs fsck)'
-  when: target_distribution == 'arch'
+  when:
+    - target_distribution == 'arch'
+    - use_disk_encryption
+
+- name: Configure mkinitcpio hooks without encryption
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/mkinitcpio.conf
+    regexp: '^HOOKS='
+    line: 'HOOKS=(base systemd autodetect modconf kms keyboard sd-vconsole block filesystems btrfs fsck)'
+  when:
+    - target_distribution == 'arch'
+    - not use_disk_encryption
 
 - name: Regenerate initramfs
   become: true
@@ -84,7 +108,29 @@
       line: 'GRUB_ENABLE_CRYPTODISK=n'
     - regexp: '^GRUB_PRELOAD_MODULES='
       line: 'GRUB_PRELOAD_MODULES="part_gpt btrfs"'
-  when: target_distribution == 'arch'
+  when:
+    - target_distribution == 'arch'
+    - use_disk_encryption
+
+- name: Configure GRUB for non-encrypted Btrfs
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  loop:
+    - regexp: '^GRUB_CMDLINE_LINUX='
+      line: 'GRUB_CMDLINE_LINUX="rootflags=subvol=@"'
+    - regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+      line: 'GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet root=UUID={{ root_uuid }} rootflags=subvol=@"'
+    - regexp: '^#?GRUB_ENABLE_CRYPTODISK='
+      line: 'GRUB_ENABLE_CRYPTODISK=n'
+    - regexp: '^GRUB_PRELOAD_MODULES='
+      line: 'GRUB_PRELOAD_MODULES="part_gpt btrfs"'
+  when:
+    - target_distribution == 'arch'
+    - not use_disk_encryption
 
 - name: Configure GRUB for encrypted Btrfs
   become: true
@@ -98,7 +144,25 @@
       line: 'GRUB_CMDLINE_LINUX="rootflags=subvol=@"'
     - regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
       line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet rd.luks.name={{ luks_uuid }}=cryptroot root=UUID={{ root_uuid }} rootflags=subvol=@"'
-  when: target_distribution == 'debian'
+  when:
+    - target_distribution == 'debian'
+    - use_disk_encryption
+
+- name: Configure GRUB for non-encrypted Btrfs
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  loop:
+    - regexp: '^GRUB_CMDLINE_LINUX='
+      line: 'GRUB_CMDLINE_LINUX="rootflags=subvol=@"'
+    - regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+      line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet root=UUID={{ root_uuid }} rootflags=subvol=@"'
+  when:
+    - target_distribution == 'debian'
+    - not use_disk_encryption
 
 - name: Install GRUB to EFI partition
   become: yes

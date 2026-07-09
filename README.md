@@ -16,6 +16,8 @@ eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519
 
 - edit use_wayland as desired
 
+- Set `use_disk_encryption` to `true` or `false` as desired.
+
 - Get partition labels with
 
 ```sh

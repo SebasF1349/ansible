@@ -1,6 +1,7 @@
 username: sebas
 target_distribution: arch
 use_wayland: false
+use_disk_encryption: true
 luks_partition_label: "LUKS_ROOT"
 root_fs_label: "ARCH_ROOT"
 arch_common_packages:
