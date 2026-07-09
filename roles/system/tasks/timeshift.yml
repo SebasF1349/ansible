@@ -5,6 +5,10 @@
     enabled: yes
     state: started
 
+- name: Normalize disk encryption toggle
+  ansible.builtin.set_fact:
+    use_disk_encryption: "{{ use_disk_encryption | default(true) | bool }}"
+
 - name: Get root UUID from label
   become: true
   ansible.builtin.command: "blkid -t LABEL={{ item }} -s UUID -o value"
