@@ -10,10 +10,8 @@
   when: target_distribution == 'arch'
 - include_tasks: audio.yml
 - include_tasks: flathub.yml
-  when: target_distribution == 'arch'
 - include_tasks: firewall.yml
 - include_tasks: timeshift.yml
-  when: target_distribution == 'arch'
 - include_tasks: dotfiles.yml
 - include_tasks: neovim.yml
 - include_tasks: kanata.yml

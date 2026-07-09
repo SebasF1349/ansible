@@ -34,7 +34,9 @@ sudo cryptsetup config /dev/sda2 --label LUKS_ROOT # LUKS
 sudo e2label /dev/sda3 STORAGE # ext4
 ```
 
-If using `arch`, update the partition label variables in `./group_vars/all/vars.yml` if needed.
+Update partition label variables in `./group_vars/all/vars.yml` if needed (used for encrypted Btrfs/Timeshift setup on both `arch` and `debian`).
+
+Flathub and Timeshift tasks run on both `arch` and `debian`.
 
 ## Run
 
