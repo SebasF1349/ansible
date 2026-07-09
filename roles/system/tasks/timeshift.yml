@@ -7,7 +7,7 @@
 
 - name: Get root UUID from label
   become: true
-  ansible.builtin.shell: "blkid -t LABEL={{ item }} -s UUID -o value"
+  ansible.builtin.command: "blkid -t LABEL={{ item }} -s UUID -o value"
   register: root_uuid_result
   loop:
     - "{{ root_fs_label }}"
