@@ -1,7 +1,7 @@
 - name: Enable Cronie
   become: true
   ansible.builtin.service:
-    name: cronie
+    name: "{{ 'cronie' if target_distribution == 'arch' else 'cron' }}"
     enabled: yes
     state: started
 
@@ -28,6 +28,17 @@
       - grub-btrfs
       - timeshift
     state: latest
+  when: target_distribution == 'arch'
+
+- name: Install Timeshift & Grub
+  become: true
+  ansible.builtin.apt:
+    name:
+      - grub-efi-amd64
+      - timeshift
+    state: latest
+    update_cache: true
+  when: target_distribution == 'debian'
 
 - name: Install timeshift-autosnap
   become: yes
@@ -37,6 +48,7 @@
     state: present
     name: 
       - timeshift-autosnap
+  when: target_distribution == 'arch'
 
 - name: Configure mkinitcpio hooks
   become: true
@@ -44,10 +56,17 @@
     path: /etc/mkinitcpio.conf
     regexp: '^HOOKS='
     line: 'HOOKS=(base systemd autodetect modconf kms keyboard sd-vconsole block sd-encrypt filesystems btrfs fsck)'
+  when: target_distribution == 'arch'
 
 - name: Regenerate initramfs
   become: true
   ansible.builtin.command: mkinitcpio -P
+  when: target_distribution == 'arch'
+
+- name: Regenerate initramfs
+  become: true
+  ansible.builtin.command: update-initramfs -u -k all
+  when: target_distribution == 'debian'
 
 - name: Configure GRUB for encrypted Btrfs
   become: true
@@ -65,10 +84,31 @@
       line: 'GRUB_ENABLE_CRYPTODISK=n'
     - regexp: '^GRUB_PRELOAD_MODULES='
       line: 'GRUB_PRELOAD_MODULES="part_gpt btrfs"'
+  when: target_distribution == 'arch'
+
+- name: Configure GRUB for encrypted Btrfs
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  loop:
+    - regexp: '^GRUB_CMDLINE_LINUX='
+      line: 'GRUB_CMDLINE_LINUX="rootflags=subvol=@"'
+    - regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+      line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet rd.luks.name={{ luks_uuid }}=cryptroot root=UUID={{ root_uuid }} rootflags=subvol=@"'
+  when: target_distribution == 'debian'
 
 - name: Install GRUB to EFI partition
   become: yes
   ansible.builtin.command: grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+  when: target_distribution == 'arch'
+
+- name: Install GRUB to EFI partition
+  become: yes
+  ansible.builtin.command: grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=debian
+  when: target_distribution == 'debian'
 
 - name: Generate GRUB configuration
   become: true
@@ -79,6 +119,7 @@
     name: grub-btrfsd
     enabled: yes
     state: started
+  when: target_distribution == 'arch'
 
 - name: Create Timeshift config diretory
   ansible.builtin.file:

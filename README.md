@@ -12,6 +12,8 @@ eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519
 
 ## Complete VARS
 
+- Set `target_distribution` in `./group_vars/all/vars.yml` (`arch` or `debian`).
+
 - edit use_wayland as desired
 
 - Get partition labels with
@@ -32,7 +34,9 @@ sudo cryptsetup config /dev/sda2 --label LUKS_ROOT # LUKS
 sudo e2label /dev/sda3 STORAGE # ext4
 ```
 
-Update the appropriated variables in `./group_vars/all/vars.yml` if needed.
+Update partition label variables in `./group_vars/all/vars.yml` if needed (used for encrypted Btrfs/Timeshift setup on both `arch` and `debian`).
+
+Flathub and Timeshift tasks run on both `arch` and `debian`.
 
 ## Run
 

@@ -3,6 +3,15 @@
     name: flatpak
     state: latest
   register: flatpak
+  when: target_distribution == 'arch'
+
+- name: Install Flatpak
+  ansible.builtin.apt:
+    name: flatpak
+    state: latest
+    update_cache: true
+  register: flatpak
+  when: target_distribution == 'debian'
 
 - name: Add flathub remote repository
   community.general.flatpak_remote:
