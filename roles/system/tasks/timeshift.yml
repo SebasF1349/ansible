@@ -19,7 +19,7 @@
 
 - name: Get LUKS UUID from label
   become: true
-  ansible.builtin.shell: "blkid -t LABEL={{ item }} -s UUID -o value"
+  ansible.builtin.command: "blkid -t LABEL={{ item }} -s UUID -o value"
   register: luks_uuid_result
   loop:
     - "{{ luks_partition_label }}"
