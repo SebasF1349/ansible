@@ -1,14 +1,17 @@
-- name: Install Rustup
+- name: Install Rustup (arch)
   community.general.pacman:
     name: rustup
     state: latest
   register: pacman
+  when: target_distribution == 'arch'
 
-- name: Install Rust
-  become: yes
-  become_user: aur_builder
-  ansible.builtin.shell:
-    cmd: rustup default stable
+- name: Install Rustup (debian)
+  become: true
+  ansible.builtin.apt:
+    name: rustup
+    state: latest
+    update_cache: yes
+  when: target_distribution == 'debian'
 
 - name: Install Rust
   ansible.builtin.shell:

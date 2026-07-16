@@ -1,15 +1,60 @@
-- name: Install Neovim
-  become: true
-  ansible.builtin.shell:
-    cmd: ./install-neovim.sh -f 2>&1 | tee install-neovim.log
-    chdir: /home/sebas/dot_files/install_scripts/
-    executable: /bin/bash
-  environment:
-    GIT_SSH_COMMAND: "ssh -i ~/.ssh/id_ed25519"
+- name: Check if Neovim Directory exists
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/apps/neovim"
+  register: nvim_dir
 
-- name: Install Tree-sitter-cli
-  community.general.cargo:
-    name: tree-sitter-cli
-    locked: true
+- name: Create Apps Directory
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/apps"
+    state: directory
+    mode: '0755'
+  when: not nvim_dir.stat.exists
+
+- name: Install Build Dependencies (Debian)
+  ansible.builtin.apt:
+    name:
+      - ninja-build
+      - gettext
+      - cmake
+      - unzip
+      - curl
+      - build-essential
     state: present
+    update_cache: yes
+  become: true
+  when:
+    - not nvim_dir.stat.exists
+    - target_distribution == 'debian'
+
+- name: Install Build Dependencies (Arch)
+  community.general.pacman:
+    name:
+      - base_devel
+      - cmake
+      - unzip
+      - ninja
+      - curl
+    state: present
+    update_cache: yes
+  become: true
+  when:
+    - not nvim_dir.stat.exists
+    - target_distribution == 'arch'
+
+- name: Clone Neovim Repository
+  ansible.builtin.git:
+    repo: https://github.com/neovim/neovim.git
+    dest: "{{ ansible_env.HOME }}/apps/neovim"
+    version: master
+    depth: 1
+  when: not nvim_dir.stat.exists
+
+- name: Build and Install Neovim
+  become: true
+  community.general.make:
+    chdir: "{{ ansible_env.HOME }}/apps/neovim"
+    target: install
+    params:
+      CMAKE_BUILD_TYPE: RelWithDebInfo
+  when: not nvim_dir.stat.exists
 

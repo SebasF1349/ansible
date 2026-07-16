@@ -1,4 +1,4 @@
-- name: Enable Audio (PipeWire)
+- name: Enable PipeWire Services
   ansible.builtin.systemd:
     name: "{{ item }}"
     enabled: yes
@@ -8,4 +8,10 @@
     - pipewire.service
     - pipewire-pulse.service
     - wireplumber.service
-    - bluetooth
+
+- name: Enable Bluetooth Service
+  become: yes
+  ansible.builtin.systemd:
+    name: bluetooth
+    enabled: yes
+    state: started

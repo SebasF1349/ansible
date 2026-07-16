@@ -1,17 +1,21 @@
 - include_tasks: essentials.yml
+- include_tasks: wezterm.yml
+  when: target_distribution == 'debian'
 - include_tasks: packages.yml
 - include_tasks: yay.yml
   when: target_distribution == 'arch'
 - include_tasks: rust.yml
-  when: target_distribution == 'arch'
 - include_tasks: aur.yml
   when: target_distribution == 'arch'
 - include_tasks: reflector.yml
   when: target_distribution == 'arch'
+- include_tasks: font.yml
+  when: target_distribution == 'debian'
 - include_tasks: audio.yml
 - include_tasks: flathub.yml
 - include_tasks: firewall.yml
 - include_tasks: timeshift.yml
-- include_tasks: dotfiles.yml
+  when: use_disk_encryption == true
 - include_tasks: neovim.yml
+- include_tasks: dotfiles.yml
 - include_tasks: kanata.yml

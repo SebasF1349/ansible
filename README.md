@@ -4,6 +4,20 @@
 
 - Update dependencies (at least the linux kernel or some cmds will fail)
 
+- Install git, gh, ansible and ssh
+
+- Create ssh key
+
+```sh
+ssh-keygen -t ed25519 -C "sebas@gmail.com"
+```
+
+- Connect the gh account
+
+```sh
+gh auth login
+```
+
 - Start ssh-agent for git
 
 ```sh

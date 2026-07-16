@@ -1,9 +1,10 @@
 username: sebas
-target_distribution: arch
+target_distribution: debian
 use_wayland: false
-use_disk_encryption: true
+use_disk_encryption: false
 luks_partition_label: "LUKS_ROOT"
 root_fs_label: "ARCH_ROOT"
+
 arch_common_packages:
   - base-devel
   - git
@@ -103,6 +104,7 @@ debian_common_packages:
   - git
   - clang
   - nodejs
+  - npm
   - python3
   - man-db
   - less
@@ -143,6 +145,8 @@ debian_common_packages:
   - gimp
   - mpv
   - thunar
+  - starship
+  - stockfish
 
 debian_wayland_packages:
   - sway

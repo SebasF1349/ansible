@@ -54,6 +54,139 @@
     - target_distribution == 'debian'
     - use_wayland | bool
 
+- name: Get Latest ImPlay Release Tag
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/tsl0922/ImPlay/releases/latest
+    return_content: yes
+  register: implay_github_release
+  when: target_distribution == 'debian'
+
+- name: Set ImPlay AppImage download URL
+  ansible.builtin.set_fact:
+    implay_appimage_url: "{{ implay_github_release.json.assets | selectattr('name', 'search', '.*Linux\\.AppImage$') | map(attribute='browser_download_url') | first }}"
+  when: target_distribution == 'debian'
+
+- name: Download and Install ImPlay (Debian)
+  ansible.builtin.get_url:
+    url: "{{ implay_appimage_url }}"
+    dest: "/usr/local/bin/implay"
+    mode: '0755'
+  become: true
+  when: target_distribution == 'debian'
+
+- name: Create Desktop Shortcut for ImPlay
+  ansible.builtin.copy:
+    dest: /usr/share/applications/implay.desktop
+    mode: '0644'
+    content: |
+      [Desktop Entry]
+      Name=ImPlay
+      Exec=/usr/local/bin/implay
+      Type=Application
+      Categories=AudioVideo;Player;
+      Terminal=False
+  become: true
+
+- name: Download Zoom (Debian)
+  ansible.builtin.get_url:
+    url: https://zoom.us/client/latest/zoom_amd64.deb
+    dest: "/tmp/zoom_amd64.deb"
+    mode: '0644'
+  when: target_distribution == 'debian'
+
+- name: Install Zoom (Debian)
+  become: true
+  ansible.builtin.apt:
+    deb: "{{ item }}"
+    state: present
+  loop:
+    - "/tmp/zoom_amd64.deb"
+  when: target_distribution == 'debian'
+
+- name: Get Latest Scid vs Pc Download URL
+  ansible.builtin.uri:
+    url: "https://sourceforge.net/projects/scidvspc/rss?path=/source"
+    return_content: true
+  register: scid_rss
+  when: target_distribution == 'debian'
+
+- name: Extract Latest Version and URL
+  ansible.builtin.set_fact:
+    scid_url: "{{ scid_rss.content | regex_search('https://sourceforge.net/projects/scidvspc/files/source/scid_vs_pc-[0-9.]+\\.tgz/download') }}"
+  when: target_distribution == 'debian'
+
+- name: Extract Version String From URL
+  ansible.builtin.set_fact:
+    scid_version: "{{ scid_url | regex_search('scid_vs_pc-[0-9]+(\\.[0-9]+)+') }}"
+  when: target_distribution == 'debian'
+
+- name: Install Compilation Dependencies
+  become: true
+  ansible.builtin.apt:
+    name:
+      - build-essential
+      - tcl-dev
+      - tk-dev
+    state: present
+  when: target_distribution == 'debian'
+
+- name: Download Latest Scid vs PC Tarball
+  ansible.builtin.get_url:
+    url: "{{ scid_url }}"
+    dest: "/tmp/{{ scid_version }}.tgz"
+    mode: '0644'
+  when: target_distribution == 'debian'
+
+- name: Extract Source Archive
+  ansible.builtin.unarchive:
+    src: "/tmp/{{ scid_version }}.tgz"
+    dest: "/tmp"
+    remote_src: true
+  when: target_distribution == 'debian'
+
+- name: Configure Scid Vs PC
+  ansible.builtin.shell:
+    cmd: ./configure
+    chdir: "/tmp/{{ scid_version }}"
+    creates: "/tmp/{{ scid_version }}/Makefile"
+  when: target_distribution == 'debian'
+
+- name: Compile and Install Scid vs Pc
+  become: true
+  community.general.make:
+    chdir: "/tmp/{{ scid_version }}"
+    target: install
+  when: target_distribution == 'debian'
+
+- name: Clean Up
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/tmp/zoom_amd64.deb"
+  when: target_distribution == 'debian'
+
+- name: Locate fdfind Executable
+  ansible.builtin.command: which fdfind
+  register: fdfind_path
+  changed_when: false
+  when: target_distribution == 'debian'
+
+- name: Ensure ~/.local/bin Exists
+  ansible.builtin.file:
+    path: ~/.local/bin
+    state: directory
+    mode: '0755'
+  when: target_distribution == 'debian'
+
+- name: Link fdfind to fd
+  ansible.builtin.file:
+    src: "{{ fdfind_path.stdout }}"
+    dest: ~/.local/bin/fd
+    state: link
+    force: yes
+  when: target_distribution == 'debian'
+
 - name: Enable Paccache
   become: yes
   ansible.builtin.systemd:

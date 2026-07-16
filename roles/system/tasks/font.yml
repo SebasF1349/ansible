@@ -1,0 +1,15 @@
+- name: Create Font Dir
+  ansible.builtin.file:
+    path: /home/sebas/.local/share/fonts/JetBrainsMono
+    state: directory
+    mode: '0755'
+
+- name: Extract JetBrains Mono Nerd Font
+  ansible.builtin.unarchive:
+    src: https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+    dest: /home/sebas/.local/share/fonts/JetBrainsMono
+    remote_src: yes
+
+- name: Update Font Cache
+  ansible.builtin.command: fc-cache -fv
+  changed_when: true

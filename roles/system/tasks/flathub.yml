@@ -6,6 +6,7 @@
   when: target_distribution == 'arch'
 
 - name: Install Flatpak
+  become: true
   ansible.builtin.apt:
     name: flatpak
     state: latest
@@ -14,6 +15,7 @@
   when: target_distribution == 'debian'
 
 - name: Add flathub remote repository
+  become: true
   community.general.flatpak_remote:
     name: flathub
     state: present

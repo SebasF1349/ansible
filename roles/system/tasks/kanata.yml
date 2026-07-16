@@ -1,3 +1,10 @@
+- name: Install Kanata
+  community.general.cargo:
+    name: kanata
+    locked: true
+    state: present
+  when: target_distribution == 'debian'
+
 - name: Ensure Kanata Config Dir
   become: yes
   ansible.builtin.file:

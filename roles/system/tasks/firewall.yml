@@ -1,8 +1,17 @@
-- name: Install firewall
+- name: Install firewall (Arch)
   become: yes
   community.general.pacman:
     name: ufw
     state: latest
+  when: target_distribution == 'arch'
+
+- name: Install firewall (Debian)
+  become: yes
+  ansible.builtin.apt:
+    name: ufw
+    state: latest
+    update_cache: true
+  when: target_distribution == 'debian'
 
 - name: Disable incoming traffic
   become: yes

@@ -1,0 +1,21 @@
+- name: Install Wezterm
+  become: yes
+  block:
+    - name: Download Wezterm GPG Key
+      ansible.builtin.get_url:
+        url: https://apt.fury.io/wez/gpg.key
+        dest: /usr/share/keyrings/wezterm-fury.gpg
+        mode: '0644'
+        force: yes
+
+    - name: Add Wezterm APT Repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *"
+        filename: wezterm
+        state: present
+        update_cache: yes
+
+    - name: Install Wezterm
+      ansible.builtin.apt:
+        name: wezterm
+        state: present
