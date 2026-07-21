@@ -1,5 +1,6 @@
 username: sebas
 target_distribution: debian
+work: true
 use_wayland: false
 use_disk_encryption: false
 luks_partition_label: "LUKS_ROOT"

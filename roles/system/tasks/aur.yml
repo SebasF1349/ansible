@@ -14,13 +14,7 @@
     state: present
     name: 
       - kanata
-      - implay
-      - kdenlive
-      - xwaylandvideobridge
       - wezterm-git
-      - scid_vs_pc
-      - stockfish
-      - zoom
 
 - name: Install Rofi Calculator
   community.general.pacman:
