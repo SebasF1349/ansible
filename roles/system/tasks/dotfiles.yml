@@ -39,7 +39,6 @@
     mode: '0755'
 
 - name: Link dotfiles
-  become: yes
   ansible.builtin.shell:
     cmd: ./link-dotfiles.sh -f 2>&1 | tee linked-files.log
     chdir: /home/sebas/dot_files/install_scripts/
