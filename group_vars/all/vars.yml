@@ -178,3 +178,48 @@ debian_x11_packages:
   - slop
   - xclip
   - picom
+
+dot_files_dir: "{{ ansible_env.HOME }}/dot_files"
+config_dir: "{{ ansible_env.HOME }}/.config"
+
+file_links:
+  - dest: "{{ ansible_env.HOME }}/.bashrc"
+    src: "{{ dot_files_dir }}/bash/.bashrc"
+  - dest: "{{ ansible_env.HOME }}/.gitconfig"
+    src: "{{ dot_files_dir }}/git/.gitconfig"
+  - dest: "{{ ansible_env.HOME }}/.vimrc"
+    src: "{{ dot_files_dir }}/vim/.vimrc"
+  - dest: "{{ config_dir }}/starship.toml"
+    src: "{{ dot_files_dir }}/starship/starship.toml"
+  - dest: "{{ ansible_env.HOME }}/.xinitrc"
+    src: "{{ dot_files_dir }}/.xinitrc"
+
+dir_links:
+  - dest: "{{ config_dir }}/nvim"
+    src: "{{ dot_files_dir }}/nvim/"
+  - dest: "{{ config_dir }}/wezterm"
+    src: "{{ dot_files_dir }}/wezterm/"
+  - dest: "{{ config_dir }}/rofi"
+    src: "{{ dot_files_dir }}/rofi/"
+  - dest: "{{ config_dir }}/dunst"
+    src: "{{ dot_files_dir }}/dunst/"
+  - dest: "{{ config_dir }}/xdg-desktop-portal"
+    src: "{{ dot_files_dir }}/xdg-desktop-portal/"
+
+wayland_links:
+  - dest: "{{ config_dir }}/waybar"
+    src: "{{ dot_files_dir }}/waybar/"
+  - dest: "{{ config_dir }}/sway"
+    src: "{{ dot_files_dir }}/sway/"
+
+hypr_dir_links:
+  - dest: "{{ config_dir }}/hypr"
+    src: "{{ dot_files_dir }}/hypr/"
+  - dest: "{{ config_dir }}/hyprland-autoname-workspaces"
+    src: "{{ dot_files_dir }}/hyprland-autoname-workspaces/"
+
+i3_dir_links:
+  - dest: "{{ config_dir }}/i3"
+    src: "{{ dot_files_dir }}/i3/"
+  - dest: "{{ config_dir }}/picom"
+    src: "{{ dot_files_dir }}/picom/"
