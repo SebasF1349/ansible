@@ -1,52 +1,85 @@
-- name: Clone or Update Dot Files
-  block:
-    - name: Check If Dot_files Exists
-      ansible.builtin.stat:
-        path: /home/sebas/dot_files
-      register: dotfiles_dir
+- name: Create Dotfile Symlinks
+  hosts: localhost
+  connection: local
+  gather_facts: true
 
-    - name: Stash local changes
-      ansible.builtin.command:
-        cmd: git stash
-        chdir: /home/sebas/dot_files
-      when: dotfiles_dir.stat.exists and dotfiles_dir.stat.isdir
-      register: stash_result
+  vars:
+    dot_files_dir: "{{ ansible_env.HOME }}/dot_files"
+    config_dir: "{{ ansible_env.HOME }}/.config"
+    
+    file_links:
+      - dest: "{{ ansible_env.HOME }}/.bashrc"
+        src: "{{ dot_files_dir }}/bash/.bashrc"
+      - dest: "{{ ansible_env.HOME }}/.gitconfig"
+        src: "{{ dot_files_dir }}/git/.gitconfig"
+      - dest: "{{ ansible_env.HOME }}/.vimrc"
+        src: "{{ dot_files_dir }}/vim/.vimrc"
+      - dest: "{{ config_dir }}/starship.toml"
+        src: "{{ dot_files_dir }}/starship/starship.toml"
+      - dest: "{{ ansible_env.HOME }}/.xinitrc"
+        src: "{{ dot_files_dir }}/.xinitrc"
+
+    dir_links:
+      - dest: "{{ config_dir }}/nvim"
+        src: "{{ dot_files_dir }}/nvim/"
+      - dest: "{{ config_dir }}/wezterm"
+        src: "{{ dot_files_dir }}/wezterm/"
+      - dest: "{{ config_dir }}/rofi"
+        src: "{{ dot_files_dir }}/rofi/"
+      - dest: "{{ config_dir }}/dunst"
+        src: "{{ dot_files_dir }}/dunst/"
+      - dest: "{{ config_dir }}/xdg-desktop-portal"
+        src: "{{ dot_files_dir }}/xdg-desktop-portal/"
+    
+    wayland_links:
+      - dest: "{{ config_dir }}/waybar"
+        src: "{{ dot_files_dir }}/waybar/"
+      - dest: "{{ config_dir }}/sway"
+        src: "{{ dot_files_dir }}/sway/"
+
+    hypr_dir_links:
+      - dest: "{{ config_dir }}/hypr"
+        src: "{{ dot_files_dir }}/hypr/"
+      - dest: "{{ config_dir }}/hyprland-autoname-workspaces"
+        src: "{{ dot_files_dir }}/hyprland-autoname-workspaces/"
+
+    i3_dir_links:
+      - dest: "{{ config_dir }}/i3"
+        src: "{{ dot_files_dir }}/i3/"
+      - dest: "{{ config_dir }}/picom"
+        src: "{{ dot_files_dir }}/picom/"
+
+  tasks:
+    - name: Check for Hyprland installation
+      ansible.builtin.command: which hyprland
+      register: hyprland_check
       failed_when: false
+      changed_when: false
 
-    - name: Pull latest code
-      ansible.builtin.git:
-        repo: git@github.com:SebasF1349/dot_files.git
-        dest: /home/sebas/dot_files
-        clone: yes
-        update: yes
-        accept_hostkey: yes
-      environment:
-        GIT_SSH_COMMAND: "ssh -i {{ ansible_env.HOME }}/.ssh/id_ed25519"
-
-    - name: Re-apply local changes
-      ansible.builtin.command:
-        cmd: git stash pop
-        chdir: /home/sebas/dot_files
-      when:
-        - dotfiles_dir.stat.exists
-        - stash_result is succeeded
-        - "'No local changes to save' not in stash_result.stdout"
+    - name: Check for i3 installation
+      ansible.builtin.command: which i3
+      register: i3_check
       failed_when: false
+      changed_when: false
 
-- name: Make link-dotfiles Executable
-  ansible.builtin.file:
-    path: /home/sebas/dot_files/install_scripts/link-dotfiles.sh
-    mode: '0755'
+    - name: Combine all active link mappings
+      ansible.builtin.set_fact:
+        all_links: "{{ file_links + dir_links + 
+                       (wayland_links if use_wayland else []) + 
+                       (hypr_dir_links if hyprland_check.rc == 0 else []) + 
+                       (i3_dir_links if i3_check.rc == 0 else []) }}"
 
-- name: Link dotfiles
-  ansible.builtin.shell:
-    cmd: ./link-dotfiles.sh -f 2>&1 | tee linked-files.log
-    chdir: /home/sebas/dot_files/install_scripts/
-    executable: /bin/bash
-  args:
-    creates: /home/sebas/dot_files/install_scripts/linked-files.log
-  register: script_output
+    - name: Create configuration directory if missing
+      ansible.builtin.file:
+        path: "{{ config_dir }}"
+        state: directory
+        mode: '0755'
 
-- name: Display Linking Files Output
-  ansible.builtin.debug:
-    var: script_output.stdout_lines
+    - name: Create symbolic links for dotfiles
+      ansible.builtin.file:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        state: link
+        force: true
+        backup: true
+      loop: "{{ all_links }}"

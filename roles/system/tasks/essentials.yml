@@ -60,3 +60,43 @@
     accept_hostkey: yes
     key_file: /home/sebas/.ssh/id_ed25519
   when: testing is defined and testing == '1'
+
+- name: Clone or Update Dot Files
+  block:
+    - name: Check If Dot_files Exists
+      ansible.builtin.stat:
+        path: /home/sebas/dot_files
+      register: dotfiles_dir
+
+    - name: Stash local changes
+      ansible.builtin.command:
+        cmd: git stash
+        chdir: /home/sebas/dot_files
+      when: dotfiles_dir.stat.exists and dotfiles_dir.stat.isdir
+      register: stash_result
+      failed_when: false
+
+    - name: Pull latest code
+      ansible.builtin.git:
+        repo: git@github.com:SebasF1349/dot_files.git
+        dest: /home/sebas/dot_files
+        clone: yes
+        update: yes
+        accept_hostkey: yes
+      environment:
+        GIT_SSH_COMMAND: "ssh -i {{ ansible_env.HOME }}/.ssh/id_ed25519"
+
+    - name: Re-apply local changes
+      ansible.builtin.command:
+        cmd: git stash pop
+        chdir: /home/sebas/dot_files
+      when:
+        - dotfiles_dir.stat.exists
+        - stash_result is succeeded
+        - "'No local changes to save' not in stash_result.stdout"
+      failed_when: false
+
+- name: Make link-dotfiles Executable
+  ansible.builtin.file:
+    path: /home/sebas/dot_files/install_scripts/link-dotfiles.sh
+    mode: '0755'
