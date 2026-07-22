@@ -16,3 +16,7 @@
 - name: Install Rust
   ansible.builtin.shell:
     cmd: rustup default stable
+  register: rust_install
+  until: rust_install.rc == 0
+  retries: 5
+  delay: 10
