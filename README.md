@@ -18,6 +18,9 @@ ssh-keygen -t ed25519 -C "sebas@gmail.com"
 gh auth login
 ```
 
+(Web code can be entered manually from another device in
+[https://github.com/login/device](https://github.com/login/device))
+
 - Start ssh-agent for git
 
 ```sh
