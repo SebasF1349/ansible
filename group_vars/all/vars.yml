@@ -61,6 +61,7 @@ arch_common_packages:
   - gimp
   - mpv
   - thunar
+  - thunar-archive-plugin
 arch_wayland_packages:
   - sway
   - swaync
@@ -147,6 +148,7 @@ debian_common_packages:
   - gimp
   - mpv
   - thunar
+  - thunar-archive-plugin
   - starship
   - stockfish
 

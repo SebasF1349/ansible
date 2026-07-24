@@ -61,3 +61,24 @@
     enabled: yes
     state: started
   when: target_distribution == 'arch'
+
+- name: Locate fdfind Executable
+  ansible.builtin.command: which fdfind
+  register: fdfind_path
+  changed_when: false
+  when: target_distribution == 'debian'
+
+- name: Ensure ~/.local/bin Exists
+  ansible.builtin.file:
+    path: ~/.local/bin
+    state: directory
+    mode: '0755'
+  when: target_distribution == 'debian'
+
+- name: Link fdfind to fd
+  ansible.builtin.file:
+    src: "{{ fdfind_path.stdout }}"
+    dest: ~/.local/bin/fd
+    state: link
+    force: yes
+  when: target_distribution == 'debian'
